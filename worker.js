@@ -1922,6 +1922,9 @@ async function getAccessToken(env) {
       Date.now() / 1000
     );
 
+console.log("EMAIL:", JSON.stringify(env.GOOGLE_CLIENT_EMAIL));
+console.log("EMAIL LENGTH:", env.GOOGLE_CLIENT_EMAIL?.length);
+  
   const header = {
     alg: "RS256",
     typ: "JWT"
@@ -1939,6 +1942,8 @@ async function getAccessToken(env) {
     iat:
       now
   };
+
+  console.log("JWT iss:", payload.iss);
 
   const unsigned =
     `${base64url(
