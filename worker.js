@@ -358,10 +358,30 @@ export default {
       }
 
       return new Response("ok");
-    } catch (error) {
-      console.error(error);
-      return new Response("ok");
-    }
+} catch (error) {
+  const errorName =
+    error instanceof Error
+      ? error.name
+      : "UnknownError";
+
+  const errorMessage =
+    error instanceof Error
+      ? error.message
+      : String(error);
+
+  const errorStack =
+    error instanceof Error
+      ? error.stack
+      : "";
+
+  console.error(
+    `BOT_ERROR_NAME: ${errorName}\n` +
+    `BOT_ERROR_MESSAGE: ${errorMessage}\n` +
+    `BOT_ERROR_STACK: ${errorStack}`
+  );
+
+  return new Response("ok");
+}
   }
 };
 
@@ -1886,6 +1906,17 @@ async function updateValues(
 }
 
 async function getAccessToken(env) {
+    if (!env.GOOGLE_CLIENT_EMAIL) {
+    throw new Error(
+      "Не найдена переменная GOOGLE_CLIENT_EMAIL в Runtime secrets."
+    );
+  }
+
+  if (!env.GOOGLE_PRIVATE_KEY) {
+    throw new Error(
+      "Не найдена переменная GOOGLE_PRIVATE_KEY в Runtime secrets."
+    );
+  }
   const now =
     Math.floor(
       Date.now() / 1000
@@ -1962,11 +1993,28 @@ async function signJwt(
   input,
   privateKeyPem
 ) {
-  const pem =
-    privateKeyPem.replace(
-      /\\n/g,
-      "\n"
+  if (
+    typeof privateKeyPem !== "string" ||
+    !privateKeyPem.trim()
+  ) {
+    throw new Error(
+      "GOOGLE_PRIVATE_KEY пустой или имеет неправильный формат."
     );
+  }
+
+  const pem = privateKeyPem
+    .trim()
+    .replace(/^["']|["']$/g, "")
+    .replace(/\\n/g, "\n");
+
+  if (
+    !pem.includes("-----BEGIN PRIVATE KEY-----") ||
+    !pem.includes("-----END PRIVATE KEY-----")
+  ) {
+    throw new Error(
+      "GOOGLE_PRIVATE_KEY не содержит BEGIN PRIVATE KEY / END PRIVATE KEY."
+    );
+  }
 
   const keyData = pem
     .replace(
