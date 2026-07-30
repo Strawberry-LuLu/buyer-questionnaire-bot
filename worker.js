@@ -806,8 +806,8 @@ ${form.number}
           formId
         );
 
-      const fileName =
-        `${formId} - ${sanitizeFileName(form.title)}.pdf`;
+const fileName =
+  `Анкета покупателя — ${sanitizeFileName(form.title)}.pdf`;
 
       await sendPdf(
         env.BOT_TOKEN,
@@ -2898,14 +2898,6 @@ for (
   y -= 32;
 
   drawTextBlock(
-    `Номер анкеты: ${form.number}`,
-    {
-      size: 10,
-      font: boldFont
-    }
-  );
-
-  drawTextBlock(
     `Название: ${form.title}`,
     {
       size: 10
@@ -2992,21 +2984,6 @@ const questions =
             pageWidth -
             marginRight -
             90,
-          y: 22,
-          size: 8,
-          font: regularFont,
-          color: rgb(
-            0.5,
-            0.5,
-            0.5
-          )
-        }
-      );
-
-      currentPage.drawText(
-        form.number,
-        {
-          x: marginLeft,
           y: 22,
           size: 8,
           font: regularFont,
