@@ -1170,6 +1170,7 @@ return sendMessage(
 
 Введите значение сообщением:${hintText}`
 );
+    }
 
   if (question.type === "single") {
     const keyboard =
