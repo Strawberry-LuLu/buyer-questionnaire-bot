@@ -23,6 +23,16 @@ const QUESTIONS = {
     textQ("object_address", "Адрес объекта"),
     textQ("filled_date", "Дата заполнения"),
     textQ("agency_specialist", "ФИО специалиста агентства")
+    textQ(
+  "passport_details",
+  "Серия и номер паспорта",
+  "Введите 10 цифр. Например: 4512 123456"
+),
+    textQ(
+  "area_range",
+  "Диапазон площади, м²",
+  "Введите два значения. Например: 20–40"
+),
   ],
 
   personal: [
@@ -37,8 +47,10 @@ const QUESTIONS = {
   ],
 
   passport: [
-    textQ("passport_series", "Серия паспорта"),
-    textQ("passport_number", "Номер паспорта"),
+textQ(
+  "passport_details",
+  "Серия и номер паспорта"
+),
     textQ("passport_issued_by", "Кем выдан"),
     textQ("passport_issue_date", "Дата выдачи"),
     textQ("passport_department_code", "Код подразделения")
@@ -70,8 +82,10 @@ const QUESTIONS = {
       ]
     ),
 
-    textQ("area_from", "Диапазон площади: от, м²"),
-    textQ("area_to", "Диапазон площади: до, м²"),
+textQ(
+  "area_range",
+  "Диапазон площади, м²"
+),
 
     singleQ(
       "preferred_floor",
@@ -120,16 +134,16 @@ const QUESTIONS = {
       ]
     ),
 
-    singleQ(
-      "condition",
-      "Состояние объекта",
-      [
-        "Без отделки",
-        "Черновая отделка",
-        "Косметический ремонт",
-        "Дизайнерский ремонт"
-      ]
-    ),
+singleQ(
+  "condition",
+  "Состояние объекта",
+  [
+    "Без отделки",
+    "Черновая отделка",
+    "Косметический ремонт",
+    "Евроремонт / дизайнерский ремонт"
+  ]
+),
 
     textQ(
       "location",
@@ -284,10 +298,6 @@ const QUESTIONS = {
   ],
 
   consent: [
-    textQ(
-      "buyer_name",
-      "ФИО покупателя"
-    ),
 
     singleQ(
       "data_consent",
@@ -310,11 +320,16 @@ const QUESTIONS = {
   ]
 };
 
-function textQ(id, title) {
+function textQ(
+  id,
+  title,
+  hint = ""
+) {
   return {
     id,
     title,
-    type: "text"
+    type: "text",
+    hint
   };
 }
 
@@ -439,14 +454,20 @@ async function handleMessage(message, env) {
       );
     }
 
-    await saveAnswer(
-      env,
-      state.formId,
-      state.sectionId,
-      state.questionId,
-      question.title,
-      text
-    );
+const normalizedAnswer =
+  normalizeTextAnswer(
+    state.questionId,
+    text
+  );
+
+await saveAnswer(
+  env,
+  state.formId,
+  state.sectionId,
+  state.questionId,
+  question.title,
+  normalizedAnswer
+);
 
     await clearState(env, chatId);
 
@@ -947,8 +968,11 @@ async function sendFormMenu(
 
   const keyboard = SECTIONS.map(
     ([sectionId, sectionTitle]) => {
-      const questions =
-        QUESTIONS[sectionId] || [];
+const questions =
+  getVisibleQuestions(
+    sectionId,
+    answers
+  );
 
       const answeredCount =
         questions.filter(
@@ -1055,12 +1079,15 @@ async function sendSectionMenu(
     item => item[0] === sectionId
   );
 
-  const questions =
-    QUESTIONS[sectionId] || [];
+ const answers = await getAnswers(
+  env,
+  formId
+);
 
-  const answers = await getAnswers(
-    env,
-    formId
+const questions =
+  getVisibleQuestions(
+    sectionId,
+    answers
   );
 
   const keyboard = questions.map(
@@ -1139,14 +1166,18 @@ async function openQuestion(
       questionId
     );
 
-    return sendMessage(
-      env.BOT_TOKEN,
-      chatId,
-      `${question.title}
+const hintText =
+  question.hint
+    ? `\n\n${question.hint}`
+    : "";
 
-Введите значение сообщением:`
-    );
-  }
+return sendMessage(
+  env.BOT_TOKEN,
+  chatId,
+  `${question.title}
+
+Введите значение сообщением:${hintText}`
+);
 
   if (question.type === "single") {
     const keyboard =
@@ -1254,6 +1285,131 @@ function getQuestion(
     question =>
       question.id === questionId
   );
+}
+
+  function normalizeTextAnswer(
+  questionId,
+  value
+) {
+  const text =
+    String(value || "").trim();
+
+  if (
+    questionId ===
+    "passport_details"
+  ) {
+    const digits =
+      text.replace(/\D/g, "");
+
+    if (digits.length === 10) {
+      return (
+        digits.slice(0, 4) +
+        " " +
+        digits.slice(4)
+      );
+    }
+
+    return text;
+  }
+
+  if (
+    questionId ===
+    "area_range"
+  ) {
+    const numbers =
+      text.match(
+        /\d+(?:[.,]\d+)?/g
+      );
+
+    if (
+      numbers &&
+      numbers.length >= 2
+    ) {
+      return (
+        numbers[0].replace(",", ".") +
+        "–" +
+        numbers[1].replace(",", ".")
+      );
+    }
+
+    return text;
+  }
+
+  return text;
+}
+
+function getVisibleQuestions(
+  sectionId,
+  answers
+) {
+  const questions =
+    QUESTIONS[sectionId] || [];
+
+  if (sectionId === "budget") {
+    const mortgage =
+      answers["budget:mortgage"];
+
+    const bankApproval =
+      answers["budget:bank_approval"];
+
+    const fundSources =
+      String(
+        answers["budget:fund_sources"] || ""
+      )
+        .split(", ")
+        .filter(Boolean);
+
+    return questions.filter(
+      question => {
+        if (
+          question.id === "mortgage_amount" ||
+          question.id === "bank_approval"
+        ) {
+          return mortgage === "Да";
+        }
+
+        if (
+          question.id === "bank_name" ||
+          question.id === "approved_amount"
+        ) {
+          return (
+            mortgage === "Да" &&
+            bankApproval === "Да"
+          );
+        }
+
+        if (
+          question.id === "other_fund_source"
+        ) {
+          return fundSources.includes(
+            "Иное"
+          );
+        }
+
+        return true;
+      }
+    );
+  }
+
+  if (sectionId === "financial") {
+    const currentLoans =
+      answers["financial:current_loans"];
+
+    return questions.filter(
+      question => {
+        if (
+          question.id ===
+          "monthly_loan_payment"
+        ) {
+          return currentLoans === "Да";
+        }
+
+        return true;
+      }
+    );
+  }
+
+  return questions;
 }
 
 async function createForm(
@@ -2525,76 +2681,152 @@ async function generatePdf(env, formId) {
 
     y -= 34;
 
-    page.drawText(
-      "Я, _________________________________________________,",
-      {
-        x: marginLeft,
-        y,
-        size: 10.5,
-        font: regularFont,
-        color: rgb(
-          0.12,
-          0.12,
-          0.12
-        )
-      }
-    );
+const buyerFullName =
+  String(
+    answers["personal:full_name"] || ""
+  ).trim();
 
-    y -= 29;
+const introPrefix = "Я,";
 
-    const firstParagraph = [
-      "подтверждаю достоверность предоставленных сведений и даю согласие",
-      "агентству недвижимости, Продавцу и уполномоченным ими лицам",
-      "на обработку моих персональных данных, а также на проверку",
-      "предоставленной информации в целях оценки возможности заключения",
-      "договора купли-продажи недвижимости."
-    ];
+page.drawText(
+  introPrefix,
+  {
+    x: marginLeft,
+    y,
+    size: 10.5,
+    font: regularFont,
+    color: rgb(
+      0.12,
+      0.12,
+      0.12
+    )
+  }
+);
 
-    for (const line of firstParagraph) {
-      page.drawText(
-        line,
-        {
-          x: marginLeft,
-          y,
-          size: 10.5,
-          font: regularFont,
-          color: rgb(
-            0.12,
-            0.12,
-            0.12
-          )
-        }
-      );
+const prefixWidth =
+  regularFont.widthOfTextAtSize(
+    introPrefix,
+    10.5
+  );
 
-      y -= 18;
+const nameX =
+  marginLeft +
+  prefixWidth +
+  8;
+
+const lineEndX =
+  pageWidth -
+  marginRight;
+
+if (buyerFullName) {
+  page.drawText(
+    buyerFullName,
+    {
+      x: nameX + 4,
+      y,
+      size: 10.5,
+      font: regularFont,
+      color: rgb(
+        0.12,
+        0.12,
+        0.12
+      )
     }
+  );
+}
+
+page.drawLine({
+  start: {
+    x: nameX,
+    y: y - 3
+  },
+  end: {
+    x: lineEndX,
+    y: y - 3
+  },
+  thickness: 0.7,
+  color: rgb(
+    0.2,
+    0.2,
+    0.2
+  )
+});
+
+y -= 29;
+
+const firstParagraph =
+  "подтверждаю достоверность предоставленных сведений и даю согласие " +
+  "агентству недвижимости, Продавцу и уполномоченным ими лицам на " +
+  "обработку моих персональных данных, а также на проверку предоставленной " +
+  "информации в целях оценки возможности заключения договора " +
+  "купли-продажи недвижимости.";
+
+const firstParagraphLines =
+  wrapText(
+    firstParagraph,
+    regularFont,
+    10.5,
+    contentWidth
+  );
+
+for (
+  const line of
+  firstParagraphLines
+) {
+  page.drawText(
+    line,
+    {
+      x: marginLeft,
+      y,
+      size: 10.5,
+      font: regularFont,
+      color: rgb(
+        0.12,
+        0.12,
+        0.12
+      )
+    }
+  );
+
+  y -= 18;
+}
 
     y -= 20;
 
-    const secondParagraph = [
-      "Мне известно, что предоставление недостоверной информации может",
-      "являться основанием для отказа в заключении договора или его",
-      "расторжения в случаях, предусмотренных законом и договором."
-    ];
+const secondParagraph =
+  "Мне известно, что предоставление недостоверной информации может " +
+  "являться основанием для отказа в заключении договора или его " +
+  "расторжения в случаях, предусмотренных законом и договором.";
 
-    for (const line of secondParagraph) {
-      page.drawText(
-        line,
-        {
-          x: marginLeft,
-          y,
-          size: 10.5,
-          font: regularFont,
-          color: rgb(
-            0.12,
-            0.12,
-            0.12
-          )
-        }
-      );
+const secondParagraphLines =
+  wrapText(
+    secondParagraph,
+    regularFont,
+    10.5,
+    contentWidth
+  );
 
-      y -= 18;
+for (
+  const line of
+  secondParagraphLines
+) {
+  page.drawText(
+    line,
+    {
+      x: marginLeft,
+      y,
+      size: 10.5,
+      font: regularFont,
+      color: rgb(
+        0.12,
+        0.12,
+        0.12
+      )
     }
+  );
+
+  y -= 18;
+}
 
     y -= 42;
 
@@ -2751,9 +2983,11 @@ async function generatePdf(env, formId) {
       sectionTitle
     );
 
-    const questions =
-      QUESTIONS[sectionId] ||
-      [];
+const questions =
+  getVisibleQuestions(
+    sectionId,
+    answers
+  );
 
     for (
       const question of
