@@ -1921,9 +1921,6 @@ async function getAccessToken(env) {
     Math.floor(
       Date.now() / 1000
     );
-
-console.log("EMAIL:", JSON.stringify(env.GOOGLE_CLIENT_EMAIL));
-console.log("EMAIL LENGTH:", env.GOOGLE_CLIENT_EMAIL?.length);
   
   const header = {
     alg: "RS256",
@@ -1942,8 +1939,6 @@ console.log("EMAIL LENGTH:", env.GOOGLE_CLIENT_EMAIL?.length);
     iat:
       now
   };
-
-  console.log("JWT iss:", payload.iss);
 
   const unsigned =
     `${base64url(
@@ -2489,6 +2484,185 @@ async function generatePdf(env, formId) {
       rowBottom;
   }
 
+    function drawConsentBlock() {
+    ensureSpace(350);
+
+    y -= 14;
+
+    page.drawLine({
+      start: {
+        x: marginLeft,
+        y
+      },
+      end: {
+        x: marginLeft + contentWidth,
+        y
+      },
+      thickness: 0.8,
+      color: rgb(
+        0.82,
+        0.69,
+        0.51
+      )
+    });
+
+    y -= 28;
+
+    page.drawText(
+      "Согласие на проверку и обработку данных",
+      {
+        x: marginLeft,
+        y,
+        size: 12,
+        font: boldFont,
+        color: rgb(
+          0.25,
+          0.18,
+          0.1
+        )
+      }
+    );
+
+    y -= 34;
+
+    page.drawText(
+      "Я, _________________________________________________,",
+      {
+        x: marginLeft,
+        y,
+        size: 10.5,
+        font: regularFont,
+        color: rgb(
+          0.12,
+          0.12,
+          0.12
+        )
+      }
+    );
+
+    y -= 29;
+
+    const firstParagraph = [
+      "подтверждаю достоверность предоставленных сведений и даю согласие",
+      "агентству недвижимости, Продавцу и уполномоченным ими лицам",
+      "на обработку моих персональных данных, а также на проверку",
+      "предоставленной информации в целях оценки возможности заключения",
+      "договора купли-продажи недвижимости."
+    ];
+
+    for (const line of firstParagraph) {
+      page.drawText(
+        line,
+        {
+          x: marginLeft,
+          y,
+          size: 10.5,
+          font: regularFont,
+          color: rgb(
+            0.12,
+            0.12,
+            0.12
+          )
+        }
+      );
+
+      y -= 18;
+    }
+
+    y -= 20;
+
+    const secondParagraph = [
+      "Мне известно, что предоставление недостоверной информации может",
+      "являться основанием для отказа в заключении договора или его",
+      "расторжения в случаях, предусмотренных законом и договором."
+    ];
+
+    for (const line of secondParagraph) {
+      page.drawText(
+        line,
+        {
+          x: marginLeft,
+          y,
+          size: 10.5,
+          font: regularFont,
+          color: rgb(
+            0.12,
+            0.12,
+            0.12
+          )
+        }
+      );
+
+      y -= 18;
+    }
+
+    y -= 42;
+
+    page.drawText(
+      "Дата",
+      {
+        x: marginLeft,
+        y,
+        size: 10.5,
+        font: boldFont,
+        color: rgb(
+          0.12,
+          0.12,
+          0.12
+        )
+      }
+    );
+
+    page.drawText(
+      "«____» __________________ 20___ г.",
+      {
+        x: marginLeft + 72,
+        y,
+        size: 10.5,
+        font: regularFont,
+        color: rgb(
+          0.12,
+          0.12,
+          0.12
+        )
+      }
+    );
+
+    y -= 58;
+
+    page.drawText(
+      "Подпись Покупателя",
+      {
+        x: marginLeft,
+        y,
+        size: 10.5,
+        font: boldFont,
+        color: rgb(
+          0.12,
+          0.12,
+          0.12
+        )
+      }
+    );
+
+    page.drawText(
+      "____________________ /____________________/",
+      {
+        x: marginLeft + 145,
+        y,
+        size: 10.5,
+        font: regularFont,
+        color: rgb(
+          0.12,
+          0.12,
+          0.12
+        )
+      }
+    );
+
+    y -= 30;
+  }
+
   page.drawText(
     "АНКЕТА ПОКУПАТЕЛЯ",
     {
@@ -2563,40 +2737,24 @@ async function generatePdf(env, formId) {
 
   y -= 12;
 
- for (
-  const [
-    sectionId,
-    sectionTitle
-  ] of SECTIONS
-) {
-  if (sectionId === "consent") {
-    continue;
-  }
-
-  drawSectionTitle(
-    sectionTitle
-  );
-
-  const questions =
-    QUESTIONS[sectionId] ||
-    [];
-
   for (
-    const question of
-    questions
+    const [
+      sectionId,
+      sectionTitle
+    ] of SECTIONS
   ) {
-    const answer =
-      answers[
-        `${sectionId}:${question.id}`
-      ];
+    if (sectionId === "consent") {
+      continue;
+    }
 
-    drawAnswerRow(
-      question.title,
-      answer
+    drawSectionTitle(
+      sectionTitle
     );
-  }
-}
-drawConsentBlock();
+
+    const questions =
+      QUESTIONS[sectionId] ||
+      [];
+
     for (
       const question of
       questions
@@ -2615,96 +2773,8 @@ drawConsentBlock();
     y -= 10;
   }
 
-  ensureSpace(90);
-
-  y -= 15;
-
-  page.drawLine({
-    start: {
-      x: marginLeft,
-      y
-    },
-    end: {
-      x:
-        pageWidth -
-        marginRight,
-      y
-    },
-    thickness: 0.8,
-    color: rgb(
-      0.7,
-      0.7,
-      0.7
-    )
-  });
-
-  y -= 30;
-
-  page.drawText(
-    "Подпись покупателя:",
-    {
-      x: marginLeft,
-      y,
-      size: 9,
-      font: regularFont,
-      color: rgb(
-        0.2,
-        0.2,
-        0.2
-      )
-    }
-  );
-
-  page.drawLine({
-    start: {
-      x: marginLeft + 120,
-      y: y - 2
-    },
-    end: {
-      x: marginLeft + 300,
-      y: y - 2
-    },
-    thickness: 0.7,
-    color: rgb(
-      0.3,
-      0.3,
-      0.3
-    )
-  });
-
-  page.drawText(
-    "Дата:",
-    {
-      x:
-        marginLeft +
-        330,
-      y,
-      size: 9,
-      font: regularFont
-    }
-  );
-
-  page.drawLine({
-    start: {
-      x:
-        marginLeft +
-        370,
-      y: y - 2
-    },
-    end: {
-      x:
-        pageWidth -
-        marginRight,
-      y: y - 2
-    },
-    thickness: 0.7,
-    color: rgb(
-      0.3,
-      0.3,
-      0.3
-    )
-  });
-
+  drawConsentBlock();
+  
   const pages =
     pdfDoc.getPages();
 
@@ -2746,198 +2816,6 @@ drawConsentBlock();
   );
 
   return pdfDoc.save();
-}
-
-function drawConsentBlock() {
-  // Если на текущей странице мало места,
-  // ensureSpace автоматически создаст новую страницу.
-  ensureSpace(360);
-
-  y -= 14;
-
-  // Верхняя разделительная линия
-  page.drawLine({
-    start: {
-      x: marginLeft,
-      y
-    },
-    end: {
-      x: marginLeft + contentWidth,
-      y
-    },
-    thickness: 0.8,
-    color: rgb(
-      0.82,
-      0.69,
-      0.51
-    )
-  });
-
-  y -= 26;
-
-  // Заголовок
-  page.drawText(
-    "Согласие на проверку и обработку данных",
-    {
-      x: marginLeft,
-      y,
-      size: 12,
-      font: boldFont,
-      color: rgb(
-        0.25,
-        0.18,
-        0.1
-      )
-    }
-  );
-
-  y -= 32;
-
-  // Поле для ФИО
-  page.drawText(
-    "Я, _________________________________________________,",
-    {
-      x: marginLeft,
-      y,
-      size: 10.5,
-      font,
-      color: rgb(
-        0.12,
-        0.12,
-        0.12
-      )
-    }
-  );
-
-  y -= 28;
-
-  const consentParagraph1 = [
-    "подтверждаю достоверность предоставленных сведений и даю согласие",
-    "агентству недвижимости, Продавцу и уполномоченным ими лицам",
-    "на обработку моих персональных данных, а также на проверку",
-    "предоставленной информации в целях оценки возможности заключения",
-    "договора купли-продажи недвижимости."
-  ];
-
-  for (
-    const line of
-    consentParagraph1
-  ) {
-    page.drawText(
-      line,
-      {
-        x: marginLeft,
-        y,
-        size: 10.5,
-        font,
-        color: rgb(
-          0.12,
-          0.12,
-          0.12
-        )
-      }
-    );
-
-    y -= 17;
-  }
-
-  y -= 18;
-
-  const consentParagraph2 = [
-    "Мне известно, что предоставление недостоверной информации может",
-    "являться основанием для отказа в заключении договора или его",
-    "расторжения в случаях, предусмотренных законом и договором."
-  ];
-
-  for (
-    const line of
-    consentParagraph2
-  ) {
-    page.drawText(
-      line,
-      {
-        x: marginLeft,
-        y,
-        size: 10.5,
-        font,
-        color: rgb(
-          0.12,
-          0.12,
-          0.12
-        )
-      }
-    );
-
-    y -= 17;
-  }
-
-  y -= 40;
-
-  // Строка даты
-  page.drawText(
-    "Дата",
-    {
-      x: marginLeft,
-      y,
-      size: 10.5,
-      font: boldFont,
-      color: rgb(
-        0.12,
-        0.12,
-        0.12
-      )
-    }
-  );
-
-  page.drawText(
-    "«____» __________________ 20___ г.",
-    {
-      x: marginLeft + 72,
-      y,
-      size: 10.5,
-      font,
-      color: rgb(
-        0.12,
-        0.12,
-        0.12
-      )
-    }
-  );
-
-  y -= 54;
-
-  // Строка подписи
-  page.drawText(
-    "Подпись Покупателя",
-    {
-      x: marginLeft,
-      y,
-      size: 10.5,
-      font: boldFont,
-      color: rgb(
-        0.12,
-        0.12,
-        0.12
-      )
-    }
-  );
-
-  page.drawText(
-    "____________________ /____________________/",
-    {
-      x: marginLeft + 145,
-      y,
-      size: 10.5,
-      font,
-      color: rgb(
-        0.12,
-        0.12,
-        0.12
-      )
-    }
-  );
-
-  y -= 30;
 }
 
 async function fetchFont(url) {
