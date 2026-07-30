@@ -20,8 +20,7 @@ const QUESTIONS = {
 general: [
   textQ("object","Объект"),
   textQ("object_address","Адрес объекта"),
-  textQ("filled_date","Дата заполнения"),
-  textQ("agency_specialist","ФИО специалиста агентства")
+  textQ("filled_date","Дата заполнения")
 ],
 
   personal: [
@@ -39,7 +38,7 @@ passport: [
   textQ("passport_details","Серия и номер паспорта","Введите 10 цифр. Например: 4512 123456"),
   textQ("passport_issued_by","Кем выдан"),
   textQ("passport_issue_date","Дата выдачи"),
-  textQ("passport_department_code","Код подразделения")
+  textQ("passport_department_code","Код подразделения","Введите 6 цифр. Например: 121-121")
 ],
   property: [
     singleQ("property_type","Тип недвижимости",
@@ -1281,6 +1280,24 @@ function getQuestion(
 
     return text;
   }
+
+    if (
+  questionId ===
+  "passport_department_code"
+) {
+  const digits =
+    text.replace(/\D/g, "");
+
+  if (digits.length === 6) {
+    return (
+      digits.slice(0, 3) +
+      "-" +
+      digits.slice(3)
+    );
+  }
+
+  return text;
+}
 
   return text;
 }
@@ -2950,6 +2967,13 @@ const questions =
         answer
       );
     }
+
+    if (sectionId === "general") {
+  drawAnswerRow(
+    "ФИО специалиста агентства",
+    form.broker
+  );
+}
 
     y -= 10;
   }
