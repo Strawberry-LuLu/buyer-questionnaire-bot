@@ -18,14 +18,12 @@ const SECTIONS = [
 ];
 
 const QUESTIONS = {
-  general: [
-    textQ("object", "Объект"),
-    textQ("object_address", "Адрес объекта"),
-    textQ("filled_date", "Дата заполнения"),
-    textQ("agency_specialist", "ФИО специалиста агентства"),
-    textQ( "passport_details", "Серия и номер паспорта","Введите 10 цифр. Например: 4512 123456"),
-    textQ( "area_range", "Диапазон площади, м²", "Введите два значения. Например: 20–40"),
-  ],
+general: [
+  textQ("object","Объект"),
+  textQ("object_address","Адрес объекта"),
+  textQ("filled_date","Дата заполнения"),
+  textQ("agency_specialist","ФИО специалиста агентства")
+],
 
   personal: [
     textQ("full_name", "ФИО полностью"),
@@ -38,20 +36,14 @@ const QUESTIONS = {
     textQ("actual_address", "Фактический адрес проживания")
   ],
 
-  passport: [
-textQ(
-  "passport_details",
-  "Серия и номер паспорта"
-),
-    textQ("passport_issued_by", "Кем выдан"),
-    textQ("passport_issue_date", "Дата выдачи"),
-    textQ("passport_department_code", "Код подразделения")
-  ],
-
+passport: [
+  textQ("passport_details","Серия и номер паспорта","Введите 10 цифр. Например: 4512 123456"),
+  textQ("passport_issued_by","Кем выдан"),
+  textQ("passport_issue_date","Дата выдачи"),
+  textQ("passport_department_code","Код подразделения")
+],
   property: [
-    singleQ(
-      "property_type",
-      "Тип недвижимости",
+    singleQ("property_type","Тип недвижимости",
       [
         "Квартира",
         "Дом / коттедж",
@@ -62,9 +54,7 @@ textQ(
       ]
     ),
 
-    singleQ(
-      "rooms",
-      "Количество комнат",
+    singleQ("rooms","Количество комнат",
       [
         "Студия",
         "1",
@@ -74,14 +64,9 @@ textQ(
       ]
     ),
 
-textQ(
-  "area_range",
-  "Диапазон площади, м²"
-),
+textQ("area_range","Диапазон площади, м²"),
 
-    singleQ(
-      "preferred_floor",
-      "Желаемый этаж",
+    singleQ("preferred_floor","Желаемый этаж",
       [
         "Не имеет значения",
         "Не выше определённого этажа",
@@ -93,9 +78,7 @@ textQ(
 
     textQ("max_floor", "Не выше какого этажа"),
 
-    singleQ(
-      "building_type",
-      "Тип дома",
+    singleQ("building_type","Тип дома",
       [
         "Кирпичный",
         "Панельный",
@@ -105,9 +88,7 @@ textQ(
       ]
     ),
 
-    singleQ(
-      "elevator",
-      "Наличие лифта",
+    singleQ("elevator","Наличие лифта",
       [
         "Не важно",
         "Обязательно",
@@ -115,9 +96,7 @@ textQ(
       ]
     ),
 
-    singleQ(
-      "parking",
-      "Наличие парковки",
+    singleQ("parking","Наличие парковки",
       [
         "Не важно",
         "Гостевая",
@@ -126,9 +105,7 @@ textQ(
       ]
     ),
 
-singleQ(
-  "condition",
-  "Состояние объекта",
+singleQ("condition","Состояние объекта",
   [
     "Без отделки",
     "Черновая отделка",
