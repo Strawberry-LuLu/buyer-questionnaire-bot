@@ -41,87 +41,423 @@ passport: [
   textQ("passport_department_code","Код подразделения","Введите 6 цифр. Например: 121-121")
 ],
   property: [
-    singleQ("property_type","Тип недвижимости",
-      [
-        "Квартира",
-        "Дом / коттедж",
-        "Таунхаус",
-        "Коммерческое помещение",
-        "Земельный участок",
-        "Другое"
-      ]
-    ),
+  singleQ(
+    "property_type",
+    "Тип недвижимости",
+    [
+      "Квартира",
+      "Дом / коттедж",
+      "Таунхаус",
+      "Коммерческое помещение",
+      "Земельный участок",
+      "Другое"
+    ]
+  ),
 
-    singleQ("rooms","Количество комнат",
-      [
-        "Студия",
-        "1",
-        "2",
-        "3",
-        "4+"
-      ]
-    ),
+  // =========================
+  // КВАРТИРА
+  // =========================
 
-textQ("area_range","Диапазон площади, м²","Введите два значения. Например: 20–40"),
+  singleQ(
+    "rooms",
+    "Количество комнат",
+    [
+      "Студия",
+      "1",
+      "2",
+      "3",
+      "4+"
+    ]
+  ),
 
-    singleQ("preferred_floor","Желаемый этаж",
-      [
-        "Не имеет значения",
-        "Не выше определённого этажа",
-        "Первый",
-        "Последний",
-        "Не первый и не последний"
-      ]
-    ),
+  textQ(
+    "area_range",
+    "Диапазон площади, м²",
+    "Введите два значения. Например: 50–80"
+  ),
 
-    textQ("max_floor", "Не выше какого этажа"),
+  singleQ(
+    "preferred_floor",
+    "Желаемый этаж",
+    [
+      "Не имеет значения",
+      "Не выше определённого этажа",
+      "Первый",
+      "Последний",
+      "Не первый и не последний"
+    ]
+  ),
 
-    singleQ("building_type","Тип дома",
-      [
-        "Кирпичный",
-        "Панельный",
-        "Монолитный",
-        "Деревянный",
-        "Не имеет значения"
-      ]
-    ),
+  textQ(
+    "max_floor",
+    "Не выше какого этажа"
+  ),
 
-    singleQ("elevator","Наличие лифта",
-      [
-        "Не важно",
-        "Обязательно",
-        "Желательно"
-      ]
-    ),
+  singleQ(
+    "building_type",
+    "Тип дома",
+    [
+      "Кирпичный",
+      "Панельный",
+      "Монолитный",
+      "Блочный",
+      "Не имеет значения",
+      "Другое"
+    ]
+  ),
 
-    singleQ("parking","Наличие парковки",
-      [
-        "Не важно",
-        "Гостевая",
-        "Подземная",
-        "Собственное машино-место"
-      ]
-    ),
+  textQ(
+    "other_building_type",
+    "Другой тип дома"
+  ),
 
-singleQ("condition","Состояние объекта",
-  [
-    "Без отделки",
-    "Черновая отделка",
-    "Косметический ремонт",
-    "Евроремонт / дизайнерский ремонт"
-  ]
-),
+  singleQ(
+    "elevator",
+    "Наличие лифта",
+    [
+      "Не важно",
+      "Обязательно",
+      "Желательно"
+    ]
+  ),
 
-    textQ(
-      "location",
-      "Желаемая локация — район / метро"
-    ),
+  singleQ(
+    "apartment_parking",
+    "Наличие парковки",
+    [
+      "Не важно",
+      "Гостевая",
+      "Подземная",
+      "Собственное машино-место"
+    ]
+  ),
 
-    textQ(
-      "requirements",
-      "Дополнительные требования: балкон, гардеробная, кладовая, охрана, двор без машин и т. д."
-    )
-  ],
+  singleQ(
+    "apartment_condition",
+    "Состояние объекта",
+    [
+      "Без отделки",
+      "Черновая отделка",
+      "Косметический ремонт",
+      "Евроремонт / дизайнерский ремонт"
+    ]
+  ),
+
+  textQ(
+    "apartment_location",
+    "Желаемая локация — район / метро"
+  ),
+
+  textQ(
+    "apartment_requirements",
+    "Дополнительные требования: балкон, гардеробная, кладовая, охрана, двор без машин и т. д."
+  ),
+
+  // =========================
+  // ДОМ / КОТТЕДЖ / ТАУНХАУС
+  // =========================
+
+  singleQ(
+    "house_rooms",
+    "Количество комнат",
+    [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5+",
+      "Не имеет значения"
+    ]
+  ),
+
+  textQ(
+    "house_area_range",
+    "Диапазон площади дома, м²",
+    "Укажите общую и/или жилую площадь. Например: 120–200"
+  ),
+
+  singleQ(
+    "house_type",
+    "Тип дома",
+    [
+      "Кирпичный",
+      "Блочный",
+      "Каркасный",
+      "Деревянный",
+      "Другое"
+    ]
+  ),
+
+  textQ(
+    "other_house_type",
+    "Другой тип дома"
+  ),
+
+  singleQ(
+    "house_condition",
+    "Состояние объекта",
+    [
+      "Без отделки",
+      "С черновой отделкой",
+      "Под ключ"
+    ]
+  ),
+
+  textQ(
+    "house_location",
+    "Желаемая локация — район, направление или населённый пункт"
+  ),
+
+  textQ(
+    "land_area",
+    "Площадь земельного участка, сотки",
+    "Например: 10–15"
+  ),
+
+  multiQ(
+    "house_parking",
+    "Наличие парковки",
+    [
+      "Гараж",
+      "Машино-место",
+      "Уличная парковка",
+      "Не имеет значения"
+    ]
+  ),
+
+  textQ(
+    "house_floors",
+    "Этажность дома"
+  ),
+
+  textQ(
+    "walls_and_floors",
+    "Материал стен и перекрытий"
+  ),
+
+  multiQ(
+    "house_utilities",
+    "Коммуникации",
+    [
+      "Отопление",
+      "Газ",
+      "Центральное водоснабжение",
+      "Скважина",
+      "Центральная канализация",
+      "Септик",
+      "Электричество",
+      "Другое"
+    ]
+  ),
+
+  textQ(
+    "other_house_utility",
+    "Другие коммуникации"
+  ),
+
+  singleQ(
+    "house_security",
+    "Охрана посёлка",
+    [
+      "Да",
+      "Нет",
+      "Не имеет значения"
+    ]
+  ),
+
+  textQ(
+    "yard_features",
+    "Требования к двору, забору и ландшафту"
+  ),
+
+  // =========================
+  // КОММЕРЧЕСКОЕ ПОМЕЩЕНИЕ
+  // =========================
+
+  singleQ(
+    "commercial_type",
+    "Тип коммерческого помещения",
+    [
+      "Офис",
+      "Торговое помещение",
+      "Помещение свободного назначения",
+      "Склад",
+      "Производственное помещение",
+      "Медицинское помещение",
+      "Объект общественного питания",
+      "Другое"
+    ]
+  ),
+
+  textQ(
+    "other_commercial_type",
+    "Другой тип коммерческого помещения"
+  ),
+
+  textQ(
+    "commercial_area",
+    "Диапазон площади помещения, м²",
+    "Например: 100–250"
+  ),
+
+  textQ(
+    "commercial_location",
+    "Желаемая локация — район / метро"
+  ),
+
+  textQ(
+    "commercial_floor",
+    "Желаемый этаж или расположение помещения"
+  ),
+
+  singleQ(
+    "separate_entrance",
+    "Наличие отдельного входа",
+    [
+      "Обязательно",
+      "Желательно",
+      "Не имеет значения"
+    ]
+  ),
+
+  singleQ(
+    "commercial_condition",
+    "Состояние помещения",
+    [
+      "Без отделки",
+      "Черновая отделка",
+      "Готово к эксплуатации",
+      "Не имеет значения"
+    ]
+  ),
+
+  textQ(
+    "ceiling_height",
+    "Минимальная высота потолков, м"
+  ),
+
+  textQ(
+    "electrical_power",
+    "Требуемая электрическая мощность, кВт"
+  ),
+
+  multiQ(
+    "commercial_parking",
+    "Требования к парковке",
+    [
+      "Гостевая парковка",
+      "Подземная парковка",
+      "Собственные машино-места",
+      "Возможность подъезда грузового транспорта",
+      "Не имеет значения"
+    ]
+  ),
+
+  singleQ(
+    "loading_area",
+    "Необходимость зоны погрузки и разгрузки",
+    [
+      "Да",
+      "Нет",
+      "Не имеет значения"
+    ]
+  ),
+
+  textQ(
+    "commercial_requirements",
+    "Дополнительные требования к коммерческому помещению"
+  ),
+
+  // =========================
+  // ЗЕМЕЛЬНЫЙ УЧАСТОК
+  // =========================
+
+  textQ(
+    "land_area_range",
+    "Диапазон площади участка",
+    "Укажите площадь в сотках или м². Например: 10–20 соток"
+  ),
+
+  textQ(
+    "land_location",
+    "Желаемая локация — населённый пункт или направление"
+  ),
+
+  singleQ(
+    "land_purpose",
+    "Назначение участка",
+    [
+      "ИЖС",
+      "СНТ",
+      "ДНП",
+      "ЛПХ",
+      "Другое"
+    ]
+  ),
+
+  textQ(
+    "other_land_purpose",
+    "Другое назначение участка"
+  ),
+
+  multiQ(
+    "land_communications",
+    "Наличие коммуникаций",
+    [
+      "Электричество",
+      "Газ",
+      "Вода",
+      "Канализация",
+      "Другое"
+    ]
+  ),
+
+  textQ(
+    "other_land_communications",
+    "Другие коммуникации"
+  ),
+
+  singleQ(
+    "access_roads",
+    "Подъездные пути",
+    [
+      "Асфальт",
+      "Грунтовая дорога",
+      "Не имеет значения",
+      "Другое"
+    ]
+  ),
+
+  textQ(
+    "other_access_roads",
+    "Другие требования к подъездным путям"
+  ),
+
+  singleQ(
+    "vehicle_access",
+    "Возможность заезда на участок",
+    [
+      "Обязательно",
+      "Желательно",
+      "Не имеет значения"
+    ]
+  ),
+
+  singleQ(
+    "land_security",
+    "Охрана",
+    [
+      "Да",
+      "Нет",
+      "Не имеет значения"
+    ]
+  ),
+
+  textQ(
+    "land_shape_relief",
+    "Требования к форме участка и рельефу"
+  )
+],
 
   budget: [
     textQ(
@@ -1309,6 +1645,272 @@ function getVisibleQuestions(
   const questions =
     QUESTIONS[sectionId] || [];
 
+  // =========================
+  // ПАРАМЕТРЫ ОБЪЕКТА
+  // =========================
+
+  if (sectionId === "property") {
+    const propertyType =
+      answers["property:property_type"];
+
+    // Пока тип объекта не выбран,
+    // показываем только вопрос о типе.
+    if (!propertyType) {
+      return questions.filter(
+        question =>
+          question.id ===
+          "property_type"
+      );
+    }
+
+    // Для варианта "Другое"
+    // показываем все возможные поля.
+    if (propertyType === "Другое") {
+      return questions;
+    }
+
+    const apartmentQuestionIds = [
+      "property_type",
+      "rooms",
+      "area_range",
+      "preferred_floor",
+      "max_floor",
+      "building_type",
+      "other_building_type",
+      "elevator",
+      "apartment_parking",
+      "apartment_condition",
+      "apartment_location",
+      "apartment_requirements"
+    ];
+
+    const houseQuestionIds = [
+      "property_type",
+      "house_rooms",
+      "house_area_range",
+      "house_type",
+      "other_house_type",
+      "house_condition",
+      "house_location",
+      "land_area",
+      "house_parking",
+      "house_floors",
+      "walls_and_floors",
+      "house_utilities",
+      "other_house_utility",
+      "house_security",
+      "yard_features"
+    ];
+
+    const commercialQuestionIds = [
+      "property_type",
+      "commercial_type",
+      "other_commercial_type",
+      "commercial_area",
+      "commercial_location",
+      "commercial_floor",
+      "separate_entrance",
+      "commercial_condition",
+      "ceiling_height",
+      "electrical_power",
+      "commercial_parking",
+      "loading_area",
+      "commercial_requirements"
+    ];
+
+    const landQuestionIds = [
+      "property_type",
+      "land_area_range",
+      "land_location",
+      "land_purpose",
+      "other_land_purpose",
+      "land_communications",
+      "other_land_communications",
+      "access_roads",
+      "other_access_roads",
+      "vehicle_access",
+      "land_security",
+      "land_shape_relief"
+    ];
+
+    let allowedIds = [];
+
+    if (propertyType === "Квартира") {
+      allowedIds =
+        apartmentQuestionIds;
+    }
+
+    if (
+      propertyType ===
+        "Дом / коттедж" ||
+      propertyType ===
+        "Таунхаус"
+    ) {
+      allowedIds =
+        houseQuestionIds;
+    }
+
+    if (
+      propertyType ===
+      "Коммерческое помещение"
+    ) {
+      allowedIds =
+        commercialQuestionIds;
+    }
+
+    if (
+      propertyType ===
+      "Земельный участок"
+    ) {
+      allowedIds =
+        landQuestionIds;
+    }
+
+    const preferredFloor =
+      answers[
+        "property:preferred_floor"
+      ];
+
+    const buildingType =
+      answers[
+        "property:building_type"
+      ];
+
+    const houseType =
+      answers[
+        "property:house_type"
+      ];
+
+    const houseUtilities =
+      String(
+        answers[
+          "property:house_utilities"
+        ] || ""
+      )
+        .split(", ")
+        .filter(Boolean);
+
+    const commercialType =
+      answers[
+        "property:commercial_type"
+      ];
+
+    const landPurpose =
+      answers[
+        "property:land_purpose"
+      ];
+
+    const landCommunications =
+      String(
+        answers[
+          "property:land_communications"
+        ] || ""
+      )
+        .split(", ")
+        .filter(Boolean);
+
+    const accessRoads =
+      answers[
+        "property:access_roads"
+      ];
+
+    return questions.filter(
+      question => {
+        if (
+          !allowedIds.includes(
+            question.id
+          )
+        ) {
+          return false;
+        }
+
+        if (
+          question.id ===
+          "max_floor"
+        ) {
+          return (
+            preferredFloor ===
+            "Не выше определённого этажа"
+          );
+        }
+
+        if (
+          question.id ===
+          "other_building_type"
+        ) {
+          return (
+            buildingType ===
+            "Другое"
+          );
+        }
+
+        if (
+          question.id ===
+          "other_house_type"
+        ) {
+          return (
+            houseType ===
+            "Другое"
+          );
+        }
+
+        if (
+          question.id ===
+          "other_house_utility"
+        ) {
+          return houseUtilities.includes(
+            "Другое"
+          );
+        }
+
+        if (
+          question.id ===
+          "other_commercial_type"
+        ) {
+          return (
+            commercialType ===
+            "Другое"
+          );
+        }
+
+        if (
+          question.id ===
+          "other_land_purpose"
+        ) {
+          return (
+            landPurpose ===
+            "Другое"
+          );
+        }
+
+        if (
+          question.id ===
+          "other_land_communications"
+        ) {
+          return landCommunications.includes(
+            "Другое"
+          );
+        }
+
+        if (
+          question.id ===
+          "other_access_roads"
+        ) {
+          return (
+            accessRoads ===
+            "Другое"
+          );
+        }
+
+        return true;
+      }
+    );
+  }
+
+  // =========================
+  // БЮДЖЕТ И ИПОТЕКА
+  // =========================
+
   if (sectionId === "budget") {
     const mortgage =
       answers["budget:mortgage"];
@@ -1318,7 +1920,9 @@ function getVisibleQuestions(
 
     const fundSources =
       String(
-        answers["budget:fund_sources"] || ""
+        answers[
+          "budget:fund_sources"
+        ] || ""
       )
         .split(", ")
         .filter(Boolean);
@@ -1326,15 +1930,19 @@ function getVisibleQuestions(
     return questions.filter(
       question => {
         if (
-          question.id === "mortgage_amount" ||
-          question.id === "bank_approval"
+          question.id ===
+            "mortgage_amount" ||
+          question.id ===
+            "bank_approval"
         ) {
           return mortgage === "Да";
         }
 
         if (
-          question.id === "bank_name" ||
-          question.id === "approved_amount"
+          question.id ===
+            "bank_name" ||
+          question.id ===
+            "approved_amount"
         ) {
           return (
             mortgage === "Да" &&
@@ -1343,7 +1951,8 @@ function getVisibleQuestions(
         }
 
         if (
-          question.id === "other_fund_source"
+          question.id ===
+          "other_fund_source"
         ) {
           return fundSources.includes(
             "Иное"
@@ -1355,9 +1964,15 @@ function getVisibleQuestions(
     );
   }
 
+  // =========================
+  // КРЕДИТНЫЕ ОБЯЗАТЕЛЬСТВА
+  // =========================
+
   if (sectionId === "financial") {
     const currentLoans =
-      answers["financial:current_loans"];
+      answers[
+        "financial:current_loans"
+      ];
 
     return questions.filter(
       question => {
@@ -1375,7 +1990,6 @@ function getVisibleQuestions(
 
   return questions;
 }
-
 async function createForm(
   env,
   chatId,
