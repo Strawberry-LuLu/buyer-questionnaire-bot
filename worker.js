@@ -28,7 +28,7 @@ general: [
     textQ("birth_date", "Дата рождения"),
     textQ("citizenship", "Гражданство"),
     textQ("birth_place", "Место рождения"),
-    textQ("phone", "Телефон"),
+    textQ("phone","Телефон","Введите в формате +79999999999"),
     textQ("email", "Email"),
     textQ("registration_address", "Адрес регистрации"),
     textQ("actual_address", "Фактический адрес проживания")
@@ -466,18 +466,18 @@ passport: [
     ),
 
     textQ(
+      "min_price",
+      "Минимальная цена, ₽"
+    ),
+    
+    textQ(
       "max_price",
       "Максимальная цена, ₽"
     ),
 
     textQ(
-      "min_price",
-      "Минимальная цена, ₽"
-    ),
-
-    textQ(
       "own_funds",
-      "Наличие собственных средств, ₽"
+      "Наличие собственных средств (сумма, ₽)"
     ),
 
     singleQ(
@@ -740,6 +740,19 @@ const normalizedAnswer =
     state.questionId,
     text
   );
+
+    if (
+  state.questionId === "phone" &&
+  !/^\+7\d{10}$/.test(
+    normalizedAnswer
+  )
+) {
+  return sendMessage(
+    env.BOT_TOKEN,
+    chatId,
+    "Номер введён неверно.\nВведите в формате +79999999999."
+  );
+}
 
 await saveAnswer(
   env,
@@ -1569,13 +1582,14 @@ function getQuestion(
   );
 }
 
-  function normalizeTextAnswer(
+function normalizeTextAnswer(
   questionId,
   value
 ) {
   const text =
     String(value || "").trim();
 
+  // Серия и номер паспорта
   if (
     questionId ===
     "passport_details"
@@ -1594,6 +1608,7 @@ function getQuestion(
     return text;
   }
 
+  // Диапазон площади
   if (
     questionId ===
     "area_range"
@@ -1617,23 +1632,68 @@ function getQuestion(
     return text;
   }
 
-    if (
-  questionId ===
-  "passport_department_code"
-) {
-  const digits =
-    text.replace(/\D/g, "");
+  // Код подразделения
+  if (
+    questionId ===
+    "passport_department_code"
+  ) {
+    const digits =
+      text.replace(/\D/g, "");
 
-  if (digits.length === 6) {
-    return (
-      digits.slice(0, 3) +
-      "-" +
-      digits.slice(3)
-    );
+    if (digits.length === 6) {
+      return (
+        digits.slice(0, 3) +
+        "-" +
+        digits.slice(3)
+      );
+    }
+
+    return text;
   }
 
-  return text;
-}
+  // Телефон
+  if (
+    questionId ===
+    "phone"
+  ) {
+    const digits =
+      text.replace(/\D/g, "");
+
+    let phoneDigits = "";
+
+    if (
+      digits.length === 11 &&
+      digits.startsWith("8")
+    ) {
+      phoneDigits =
+        "7" + digits.slice(1);
+    } else if (
+      digits.length === 11 &&
+      digits.startsWith("7")
+    ) {
+      phoneDigits = digits;
+    } else if (
+      digits.length === 10
+    ) {
+      phoneDigits =
+        "7" + digits;
+    }
+
+    if (phoneDigits.length === 11) {
+      return (
+        "+7 (" +
+        phoneDigits.slice(1, 4) +
+        ") " +
+        phoneDigits.slice(4, 7) +
+        "-" +
+        phoneDigits.slice(7, 9) +
+        "-" +
+        phoneDigits.slice(9, 11)
+      );
+    }
+
+    return text;
+  }
 
   return text;
 }
