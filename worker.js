@@ -22,7 +22,7 @@ general: [
   textQ("object_address","Адрес объекта"),
   textQ("filled_date","Дата заполнения")
 ],
-
+  
   personal: [
     textQ("full_name", "ФИО полностью"),
     textQ("birth_date", "Дата рождения"),
