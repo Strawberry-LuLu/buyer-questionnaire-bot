@@ -586,11 +586,6 @@ passport: [
         "Иное"
       ]
     ),
-
-    textQ(
-      "other_document",
-      "Иной документ"
-    )
   ],
 
   timing: [
